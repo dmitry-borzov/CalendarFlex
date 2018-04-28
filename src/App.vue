@@ -30,6 +30,7 @@ export default {
 <style lang="scss">
   html {
     height: 100%;
+    font-family: "Segoe UI Semibold";
   }
 
   body {
@@ -66,5 +67,8 @@ export default {
   .body { // основное тело контейнер
     flex-grow: 1; // растягивается чтобы заполнить  все пространство
     overflow-y: auto; // скролл если не влезает
+    background-color: rgb(23, 55, 93);
+    max-width: 767px;
+    color: white;
   }
 </style>

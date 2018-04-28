@@ -4,11 +4,11 @@
       <div class="title">{{month.title}}</div>
       <div class="week">
         <div class="day" v-for="d in weekDays">
-          <span>{{d}}</span>
+          <span class="week-day">{{d}}</span>
         </div>
       </div>
       <div class="week" v-for="week in month.weeks">
-        <div class="day" v-for="day in 7" :class="{[`week-day-${day}`]: true}">
+        <div class="day" v-for="day in 7" :class="{[`week-day-${day}`]: true, 'work-day': week[day] && week[day].isWorkDay, 'off-day': week[day] && !week[day].isWorkDay}">
           <span v-if="week[day]">{{week[day].date.getDate()}}</span>
         </div>
       </div>
@@ -30,10 +30,26 @@
     display: flex;
   }
 
+  .week-day {
+    color: white;
+  }
+
   .day {
-    margin: 0.25em;
+    padding: 0.25em;
     flex-grow: 1;
     flex-basis: 0;
+    color: black;
+    border: solid black 0.5px;
+    background-color: rgb(23, 55, 93);
+    text-align: center;
+  }
+
+  .work-day {
+    background-color: rgb(247, 150, 70);
+  }
+
+  .off-day {
+    background-color: rgb(0, 176, 80);
   }
 
   .year {
@@ -52,7 +68,7 @@
 <script>
   import moment from 'moment'
 
-  require('moment/locale/ru.js');
+  require('moment/locale/en-gb.js');
 
   export default {
     props: {
@@ -73,6 +89,19 @@
         return days;
       },
       yearData() {
+        var settings = {
+          worksDays: 2,
+          offDays: 2,
+          shift: 3,
+        };
+
+        function isWorkingDay(settings, i){
+          let index = i + settings.shift;
+          var rem = index % (settings.worksDays + settings.offDays);
+          return rem < settings.worksDays;
+        }
+
+        let i = 0;
         let data = [];
         for (let m = 0; m < 12; ++m) {
           let day = moment({year: this.year, month: m, day: 1}); // формируем дату на первый день каждого месяца
@@ -100,10 +129,12 @@
             // но так будет удобнее
             month.weeks[week][day.weekday() + 1] = {
               date: day.toDate(),
+              isWorkDay: isWorkingDay(settings, i),
             };
 
             // итерируем день на единицу, moment мутирует исходное значение
             day.add(1, 'd');
+            ++i;
           }
 
           // добавлям данные по месяцу в год
