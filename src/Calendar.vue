@@ -70,6 +70,27 @@
 
   require('moment/locale/en-gb.js');
 
+  var currentYearSettings = {
+    worksDays: 2,
+    offDays: 2,
+    shift: 3,
+  };
+
+  function isWorkingDay(settings, year, i){
+    let currentYear = new Date().getFullYear();
+    let yearDiff = year - currentYear;
+    let daysInDiff = 0;
+    for(let y = 0; y < yearDiff; y++) {
+      for(let m = 1; m < 13; m++){
+        daysInDiff += moment(currentYear + y + "-" + m, "YYYY-M").daysInMonth();
+      }
+    }
+    
+    let index = daysInDiff + i + settings.shift;
+    var rem = index % (settings.worksDays + settings.offDays);
+    return rem < settings.worksDays;
+  }
+
   export default {
     props: {
       year: {  // год на который строится календарь
@@ -89,18 +110,6 @@
         return days;
       },
       yearData() {
-        var settings = {
-          worksDays: 2,
-          offDays: 2,
-          shift: 3,
-        };
-
-        function isWorkingDay(settings, i){
-          let index = i + settings.shift;
-          var rem = index % (settings.worksDays + settings.offDays);
-          return rem < settings.worksDays;
-        }
-
         let i = 0;
         let data = [];
         for (let m = 0; m < 12; ++m) {
@@ -129,7 +138,7 @@
             // но так будет удобнее
             month.weeks[week][day.weekday() + 1] = {
               date: day.toDate(),
-              isWorkDay: isWorkingDay(settings, i),
+              isWorkDay: isWorkingDay(currentYearSettings, this.year, i),
             };
 
             // итерируем день на единицу, moment мутирует исходное значение

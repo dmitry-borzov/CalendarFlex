@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="content">
       <div class="header">
-        <button @click="--year">&lt;</button>
+        <button v-if="year > currentYear" @click="--year">&lt;</button>
         <div class="title">{{year}}</div>
         <button @click="++year">&gt;</button>
       </div>
@@ -21,7 +21,8 @@ export default {
   name: 'app',
   data () {
     return {
-      year: 2018
+      year: (new Date()).getFullYear(),
+      currentYear: (new Date()).getFullYear(),
     }
   }
 }
