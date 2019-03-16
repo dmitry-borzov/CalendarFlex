@@ -113,7 +113,7 @@
       yearData() {
         let i = 0;
         let data = [];
-        let isWeekStartsWithPrevYear = false;
+        let lastWeek = 0;
         for (let m = 0; m < 12; ++m) {
           let day = moment({year: this.year, month: m, day: 1}); // формируем дату на первый день каждого месяца
           let daysInMonth = day.daysInMonth(); // количество дней в месяце
@@ -123,15 +123,20 @@
           };
 
           // итерируем по количеству дней в месяце
+          let isFirstWeekInPrevYear = false;
           for (let d = 0; d < daysInMonth; ++d) {
             let week = day.isoWeek();
             let weekYear = day.isoWeekYear();
 
             if (weekYear < this.year) {
-              isWeekStartsWithPrevYear = true;
+              isFirstWeekInPrevYear = true;
               week = 1;
-            } else if (isWeekStartsWithPrevYear) {
+            } else if (isFirstWeekInPrevYear) {
               week += 1;
+            }
+            lastWeek = Math.max(lastWeek, week);
+            if (weekYear > this.year) {
+              week = lastWeek + 1;
             }
 
             // если неделя еще не присутствует в месяце, то добавляем ее
