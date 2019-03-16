@@ -74,7 +74,7 @@
   var currentYearSettings = {
     worksDays: 2,
     offDays: 2,
-    shift: 3,
+    shift: 4,
   };
 
   function isWorkingDay(settings, year, i){
