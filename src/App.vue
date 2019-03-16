@@ -9,9 +9,6 @@
       <div class="body">
         <calendar :year="year"></calendar>
       </div>
-      <div class="header">
-        <div class="title">{{year}}</div>
-      </div>
     </div>
   </div>
 </template>
@@ -57,7 +54,6 @@ export default {
 
   .wrapper { // ограничивает высоту
     display: flex;
-    height: 100%;
   }
 
   .content { // непосредственный контейнер с заголовком и содержимым

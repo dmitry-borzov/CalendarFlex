@@ -1,15 +1,24 @@
 <template>
   <div class="year">
     <div class="month" v-for="month in yearData">
-      <div class="title">{{month.title}}</div>
-      <div class="week">
-        <div class="day" v-for="d in weekDays">
-          <span class="week-day">{{d}}</span>
-        </div>
-      </div>
-      <div class="week" v-for="week in month.weeks">
-        <div class="day" v-for="day in 7" :class="{[`week-day-${day}`]: true, 'work-day': week[day] && week[day].isWorkDay, 'off-day': week[day] && !week[day].isWorkDay}">
-          <span v-if="week[day]">{{week[day].date.getDate()}}</span>
+      <div style="display: flex; justify-content: space-between; border-top: 1px solid black;">
+        <div class="title">{{month.title}}</div>
+        <div>
+          <div class="week" v-if="month.value === 1 || month.value === 7">
+            <div class="day" v-for="d in weekDays">
+              <span class="week-day">{{d}}</span>
+            </div>
+          </div>
+          <div class="week" v-for="week in month.weeks">
+            <div class="day" v-for="day in 7" :class="{[`week-day-${day}`]: true, 'work-day': week[day] && week[day].isWorkDay, 'off-day': week[day] && !week[day].isWorkDay}">
+              <span v-if="week[day]">{{week[day].date.getDate()}}</span>
+            </div>
+          </div>
+          <div class="week" v-if="month.value === 6 || month.value === 12">
+            <div class="day" v-for="d in weekDays">
+              <span class="week-day">{{d}}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -20,6 +29,7 @@
   .title {
     margin: 0.25em;
     font-weight: bold;
+    padding-top: 40px;
   }
 
   .week-day-7 {
@@ -32,17 +42,19 @@
 
   .week-day {
     color: white;
-    font-size: 10pt;
+    font-size: 9pt;
   }
 
   .day {
-    padding: 0.25em;
+    padding: 0.1em;
     flex-grow: 1;
     flex-basis: 0;
     color: black;
     border: solid black 0.5px;
     background-color: rgb(23, 55, 93);
     text-align: center;
+    font-size: 10pt;
+    min-width: 23px;
   }
 
   .work-day {
@@ -55,12 +67,15 @@
 
   .year {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-evenly;
+    height: 710px;
+    width: 470px;
   }
 
   .month {
-    margin: 0.25em;
+    margin: 0 0.25em;
     flex-basis: 0;
     flex-grow: 1;
   }
@@ -118,7 +133,8 @@
           let day = moment({year: this.year, month: m, day: 1}); // формируем дату на первый день каждого месяца
           let daysInMonth = day.daysInMonth(); // количество дней в месяце
           let month = { // готовим объект месяца
-            title: day.format("MMMM"),
+            value: m + 1,
+            title: day.format("MMM"),
             weeks: {},
           };
 
