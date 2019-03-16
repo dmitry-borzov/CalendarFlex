@@ -32,6 +32,7 @@
 
   .week-day {
     color: white;
+    font-size: 10pt;
   }
 
   .day {
