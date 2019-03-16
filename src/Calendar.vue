@@ -112,6 +112,7 @@
       yearData() {
         let i = 0;
         let data = [];
+        let isWeekStartsWithPrevYear = false;
         for (let m = 0; m < 12; ++m) {
           let day = moment({year: this.year, month: m, day: 1}); // формируем дату на первый день каждого месяца
           let daysInMonth = day.daysInMonth(); // количество дней в месяце
@@ -122,13 +123,16 @@
 
           // итерируем по количеству дней в месяце
           for (let d = 0; d < daysInMonth; ++d) {
-            let week = day.week();
-            // небольшой хак, момент считает
-            // последние дни декабря за первую неделю,
-            // но мне надо чтобы считалось за 53
-            if (m === 11 && week === 1) {
-              week = 53
+            let week = day.isoWeek();
+            let weekYear = day.isoWeekYear();
+
+            if (weekYear < this.year) {
+              isWeekStartsWithPrevYear = true;
+              week = 1;
+            } else if (isWeekStartsWithPrevYear) {
+              week += 1;
             }
+
             // если неделя еще не присутствует в месяце, то добавляем ее
             if (!month.weeks.hasOwnProperty(week)) {
               month.weeks[week] = {}
